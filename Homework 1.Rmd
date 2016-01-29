@@ -1,0 +1,314 @@
+---
+title: "MA 4780 Homework 1"
+author: "Benjamin Hendrick"
+date: "January 18, 2016"
+output:
+  pdf_document:
+    fig_caption: yes
+    fig_height: 3
+    fig_width: 4
+  html_document: default
+---
+
+# Problem 1.4
+
+Use R to simulate 48 random indepent chi-square distributed values, each with 2 degrees of freedom.
+
+```{r}
+set.seed(1)
+chiSq <- as.ts(rchisq(48, 2, ncp = 0))
+```
+
+Use this random data to generate a time series plot.
+
+```{r, fig.cap="Time series plot of 48 random chi-squared distributed points.\\label{fig:one}"}
+plot(chiSq,
+     xlab = "Time (t)",
+     ylab = "Y",
+     main = "Random Chi-Squared Distribution")
+```
+
+Use the same code to generate two more random plots.
+
+```{r, fig.cap="Time series plot of 48 random chi-squared distributed points.\\label{fig:two}"}
+set.seed(2)
+chiSq <- as.ts(rchisq(48, 2, ncp = 0))
+plot(chiSq,
+     xlab = "Time (t)",
+     ylab = "Y",
+     main = "Random Chi Squared Distribution")
+```
+
+```{r, fig.cap="Time series plot of 48 random chi-squared distributed points.\\label{fig:three}"}
+set.seed(3)
+chiSq <- as.ts(rchisq(48, 2, ncp = 0))
+plot(chiSq,
+     xlab = "Time (t)",
+     ylab = "Y",
+     main = "Random Chi Squared Distribution")
+```
+
+Each plot appears random. When comparingthe plots in Figures \ref{fig:one}, \ref{fig:two}, \ref{fig:three}, there is no common trend or pattern to be followed. Each plot is unique enough to suggest randomness.
+
+# Problem 1.5
+
+Use R to simulate 48 random indepent t-distributed values, each with 5 degrees of freedom.
+
+Use this random data to generate a time series plot.
+
+```{r}
+set.seed(4)
+t <- as.ts(rt(48, 5, ncp = 0))
+```
+
+
+```{r, fig.cap="Time series plot of 48 random t-distributed points.\\label{fig:four}"}
+plot(t,
+     xlab = "Time (t)",
+     ylab = "Y",
+     main = "Random t-Distribution")
+```
+
+Use the same code to generate two more random plots.
+
+```{r, fig.cap="Time series plot of 48 random t-distributed points.\\label{fig:five}"}
+set.seed(5)
+t <- as.ts(rt(48, 5, ncp = 0))
+plot(t,
+     xlab = "Time (t)",
+     ylab = "Y",
+     main = "Random t-Distribution")
+```
+
+```{r, fig.cap="Time series plot of 48 random t-distributed points.\\label{fig:six}"}
+set.seed(6)
+t <- as.ts(rt(48, 5, ncp = 0))
+plot(t,
+     xlab = "Time (t)",
+     ylab = "Y",
+     main = "Random t-Distribution")
+```
+
+Each plot appears random. When comparingthe plots in Figures \ref{fig:four}, \ref{fig:five}, \ref{fig:six}, there is no common trend or pattern to be followed. Each plot is unique enough to suggest randomness.
+
+# Problem 1.6
+
+The following code constructs a time series plot with monthly plotting symbols for the Dubuque temperature series in Exhibit 1.9, on page 7 in the text. The output is seen in Figure \ref{fig:dubplot} on the next next page.
+
+```{r, include=FALSE}
+library(TSA)
+```
+
+```{r, fig.cap="Dubuque temperatures over time with monthly plotting symbols.\\label{fig:dubplot}", fig.height=4, fig.width=8}
+data("tempdub")
+plot(tempdub, type='l', ylab='Sales', main = "Dubuque Temperatures over Time")
+points(y=tempdub,x=time(tempdub),
+       pch=as.vector(season(tempdub)))
+```
+
+\newpage
+
+# Problem 2.9
+
+## Part A
+
+Let $Y_{t} = \beta_{0} + \beta_{1}t + X_{t}$.
+
+Because the expected value 
+
+\begin{align*}
+E(Y_{t}) &= E(\beta_{0}+\beta_{1}t+X_{t}) \\
+         &= E(\beta_{0})  + E(\beta_{1}t) + E(X_{t}) \\
+         &= \beta_{0} + \beta_{1}t
+\end{align*}
+
+is not constant and depends on $t$, $Y_{t}$ is not stationary.
+
+Consider $W_{t} = Y_{t} - Y_{t-1}$ where
+
+\begin{align*}
+E(W_{t}) &= E(Y_{t}-Y_{t-1}) \\
+         &= E(\beta_{0} + \beta_{1}t) - E(\beta_{0} + \beta_{1}(t-1)) \\
+         &= E(\beta_{1}t-\beta_{1}t+\beta_{1}) \\
+         &= \beta_{1}
+\end{align*}
+
+is constant. The autocovariance, where 
+
+\begin{align*}
+cov(W_{t},W_{s}) &= cov(Y_{t}-Y_{t-1}, Y_{s}-Y_{s-1}) \\
+                 &= \gamma_{|t-s|} +\gamma_{|(t-1)-(s-1)|} - \gamma_{|t-1-s|} - \gamma_{|s-1-t|} \\
+                 & = \gamma_{|t-s|} + \gamma_{|t-s|} - \gamma_{|t-1-s|} - \gamma_{|s-1-t|} \\
+                 &= 2\gamma_{h} + \gamma_{h-1} - \gamma_{h+1}
+\end{align*}
+
+only depends on the lag $h$. Therefore, $W_{t}$ is stationary.
+
+# Problem 2.10
+
+## Part A
+
+Consider $Y_{t} = \mu_{t} + \sigma_{t}X_{t}$ where
+
+\begin{align*}
+E(Y_{t}) &= E(\mu_{t}) + E(\sigma_{t}X_{t}) \\
+         &= \mu_{t} + \sigma_{t}E(X_{t}) \\
+         &= \mu_{t} + 0 \\
+         &= \mu_{t}
+\end{align*}
+
+is constant. The autocovariance, where
+
+\begin{align*}
+cov(Y_{t}, Y_{s}) &= cov(\mu_{t}+\sigma_{t}X_{t}, \mu_{s}+\sigma_{s}X_{s}) \\
+                  &= cov(\sigma_{t}X_{t}, \sigma_{s}X_{s}) \\
+                  &= \sigma_{t}\sigma_{s}cov(X_{t},X_{s}) \\
+                  &= \sigma_{t}\sigma_{s}(corr(X_{t},X_{s}\sqrt{Var(X_{t})Var(X_{s})})) \\
+                  &= \sigma_{t}\sigma_{s}(\rho_{k}\sqrt{(1)(1)}) \\
+                  &= \sigma_{t}\sigma_{s}\rho_{k}
+\end{align*}
+
+depends on the lag $k$.
+
+## Part B
+
+The autocorrelation function
+
+\begin{align*}
+corr(Y_{t},Y_{s}) &= \frac{cov(Y_{t},Y_{s})}{\sqrt{Var(Y_{t})Var(Y_{s})}} \\
+                  &= \frac{\sigma_{t}\sigma_{s}\rho_{k}}{\sigma_{t}\sigma_{s}} \\
+                  &= \rho_{k}
+\end{align*}
+
+only depends on the lag $k$. However, $Y_{t}$ is *not stationary* because the expected value of $Y_{t}$, $\mu_{t}$, depends on time $t$.
+
+## Part C
+
+Even if the expected value of a function $Y_{t}$ with a constant mean, $\mu$. The autocovarianc function $cov(Y_{t}, Y_{s}) = \sigma_{t}\sigma_{s}\rho_{k}$ still depends on $t$, therefore making $Y_{t}$ *not stationary*.
+
+# Problem 2.13
+
+## Part A
+
+Consider $Y_{t} = e_{t} - \theta(e_{t-1})^2$ where
+
+\begin{align*}
+E(Y_{t}) &= E(e_{t}) - \theta E(e_{t-1}^2) \\
+         &= \theta\sigma^2
+\end{align*}
+
+is constant. The autocovariance function, where
+
+\begin{align*}
+cov(Y_{t}, Y_{s}) &= cov(e_{t} - \theta(e_{t-1})^2, e_{s} - \theta(e_{t-1})^2) \\
+                  &= E((e_{t}e_{s}) - (\theta (e_{t-1})^2 e_{s}) - (\theta (e_{s-1})^2 e_{t}) + (\theta^2 (e_{t-1})^2 (e_{s_1})^2)) - \theta^2 \sigma^4 \\
+                  &= E(e_{t}e_{s}) - \theta E((e_{t-1})^2 e_{s}) - \theta E((e_{s-1})^2 e_{t}) + \theta^2 E((e_{t-1})^2 (e_{s-1})^2) - \theta^2 \sigma^4 \\
+                  &= 0 - 0 - 0 + \theta^2 \sigma^4 - \theta^2 \sigma^4 = 0 
+\end{align*}
+
+depends on the time lag. Therefore, becuase $\gamma = 0$, the autocorrelation function $\rho = 0$.
+
+## Part B
+
+$Y_{t}$ is stationary because the expected value is constand the the auotcovariance function only depnds on the time lag.
+
+# Problem 2.14
+
+## Part A
+
+Consider $Y_{t} = \theta_{0} + t e_{t}$, where
+
+\begin{align*}
+E(Y_{t}) &= E(\theta_{0} + t e_{t}) \\
+         &= \theta_{0}
+\end{align*}
+
+is constant. The autocovariance function
+
+\begin{align*}
+cov(Y_{t}, Y_{s}) &= cov(\theta_{0} + t e_{t}, \theta_{0} + s e_{s}) \\
+                  &= cov(t e_{t}, s e_{s}) \\
+                  &= t s cov(e_{t}, e_{s}) \\
+                  &= t s \sigma^2
+\end{align*}
+
+depends on $t$. Therefore, $Y_{t}$ is *not stationary*.
+
+## Part B
+
+Consider $W_{t} = Y_{t} - Y_{t-1} = t e_{t} - (t-1) e_{t-1}$, where 
+
+\begin{align*}
+E(W_{t}) &= E(t e_{t} - (t-1) e_{t-1}) \\
+         &= t E(e_{t}) - (t-1) E(e_{t-1}) \\
+         &= 0
+\end{align*}
+
+is constant. The autocovariance function 
+
+\begin{align*}
+cov(W_{t}, W_{s}) &= cov(t e_{t} - (t-1) e_{t-1}, s e_{s} - (s-1) e_{s-1}) \\
+                  &= E(t e_{t} S e_{s},) - E(s e_{s} (t-1) e_{t-1}) - E(t e_{t} (s-1) e_{s-1}) + E((t-1) e_{t-1} (s-1) e_{s-1}) \\
+                  &= ts E(e_{t}e_{s}) - s(t-1) E(e_{S}e_{t-1}) - t(s-1) E(e_{s-1} e_{t}) + (t-1)(s-1) E(e_{s-1} e_{t-1}) \\
+                  &= ts \sigma^2 - (st-s)\sigma^2 - (ts-t)\sigma^2 + (ts-s-t+1)\sigma^2 \\
+                  &= \sigma^2 (ts - st + s- ts + t + ts - s - t + 1) \\
+                  &= \sigma^2
+\end{align*}
+
+does not depend on the time lag. Therefore $W_{t}$ is *not stationary*.
+
+## Part C
+
+Consider $Y_{t} = e_{t} e_{t-1}$, where
+
+\begin{align*}
+E(Y_{t}) &= E(e_{t} e_{t-1}) \\
+         &= E(e_{t}) E(e_{t-1}) \\
+         &= 0
+\end{align*}
+
+is constant. The autocovariance function 
+
+\begin{align*}
+cov(Y_{t}, Y_{s}) &= cov(e_{t} e_{t-1}, e_{s} e_{s-1}) \\
+                  &= E(e_{t} e_{t-1} e_{s} e_{s-1}) - \sigma^4 \\
+                  &= \sigma^4
+\end{align*}
+
+does not depond the the time lag. Therefore $Y_{t}$ is *not stationary.*
+
+# Problem 2.19
+
+## Part A
+
+\begin{align*}
+Y_{t} &= \theta_{0} + Y_{t-1} + e_{t} \\
+      &= \theta_{0} + (\theta_{0} + Y_{t-2} + e_{t-1}) + e_{t} \\
+      &= 2\theta_{0} + (\theta_{0} + Y_{t-3} + e_{t-2}) + e_{t} + e_{t-1} \\
+      &= 3\theta_{0} + (\theta_{0} + Y_{t-4} + e_{t-3}) + e_{t} + e_{t-1} + e_{t-2} 
+\end{align*}
+
+for $t$ iterations until we get $Y_{t} = t\theta + e_{t} + e_{t-1} + \ldots + e_{1}$.
+
+# Part B
+
+The expected value
+
+\begin{align*}
+E(Y_{t}) &= E(t \theta_{0} + e_{t} + \ldots + e_{1}) \\
+         &= E(t \theta_{0}) \\
+         &= t \theta_{0}
+\end{align*}
+
+depends on $t$.
+
+## Part C
+
+The autocovariance function
+
+\begin{align*}
+cov(t\theta_{0} + e_{t} + e_{t-1} + \ldots + e_{1}, s\theta_{0} +e_{s} + e_{s-1} +\ldots + e_{1}) &= var(e_{t} + e_{t-1} + \ldots + e_{1}) \\
+                                                                                                  &= t \theta_{t}
+\end{align*}
+
+also depends on $t$. Therefore, $Y_{t}$ is not stationary.
