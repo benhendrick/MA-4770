@@ -1,0 +1,360 @@
+---
+title: "MA 4780 Homework 2"
+author: "Benjamin Hendrick"
+date: "February 10, 2016"
+output:
+  pdf_document:
+    fig_caption: yes
+    fig_height: 3
+    fig_width: 4
+---
+
+# Problem 3.2
+
+\begin{align*}
+\bar{Y} &= \big[ \mu + \frac{1}{n} \sum^{n}_{t=1} (e_{t} - e_{t-1}) \big] \\
+        &= \mu + \frac{1}{n}(e_{n}-e_{0})
+\end{align*}
+
+Therefore, 
+
+\begin{align*}
+Var(\bar{Y}) &= \frac{1}{n^{2}} Var(e_{n}-e_{0}) \\
+             &= \frac{2}{n^{2}} \sigma^{2}_{e}
+\end{align*}
+
+# Problem 3.3
+
+$$\sum^{n}_{t=1} (e_{t} + e_{t-1}) = e_{n} + e_{0} + 2\sum^{n-1}_{t=1} e_{t}$$
+
+Therefore,
+
+\begin{align*}
+Var(\bar{Y}) &= \frac{1}{n^{2}} [\sigma^{2}_{e} + \sigma^{2}_{e} + 4(n-1)\sigma^{2}_{e}] \\
+             &= \frac{2(2n-1)}{n^2} \sigma^{2}_{e}
+\end{align*}
+
+# Problem 3.7
+
+Load the data.
+
+```{r, results='hide'}
+library(TSA)
+data("winnebago")
+```
+
+## Part A
+
+Figure \ref{fig:one} shows the time series plot of the data `winnebago`.
+
+```{r fig.cap="Time series plot of monthly unit sales of recreational vehicles from Winnebago, Inc. \\label{fig:one}"}
+plot(winnebago,
+     type="o",
+     ylab="Unit Sales",
+     main="Monthly Unit Sales over Time")
+model <- lm(winnebago~time(winnebago))
+abline(model)
+```
+
+## Part B
+
+The fitted regression line fits well to the time series data. The line data is not heteroscedastic, but the line still fits well enough. Figure \ref{fig:two} shows the standardized residuals from the fit as a time series. The residuals appear to be centered around mean zero.
+
+```{r fig.cap="Plot of standardized residuals from the fit as a time series. \\label{fig:two}"}
+plot(rstudent(model),
+     type = "o",
+     ylab = "Standard Residuals",
+     main = "Monthly Unit Sales")
+```
+
+## Part C
+
+Figure \ref{fig:three} time series plot of the monthly unit sales with a log scale. 
+
+```{r fig.cap = "Time series plot of monthly unit sales of recreational vehicles from Winnebago, Inc. under a log scale \\label{fig:three}"}
+winnLog <- log(winnebago)
+plot(winnLog, 
+     type="o",
+     ylab = "Unit Sales (Log Scale)", 
+     main = "Monthly Unit Sales")
+logModel <- lm(winnLog~time(winnLog))
+abline(logModel)
+```
+
+## Part D
+
+The least squares fit on the logged data fits very well. The data with the log transformation seem more heteroscedastic, yet just as linear. Figure \ref{fig:four} shows the standardized residuals of the logged data. The residuals appear to be centered around mean zero.
+
+```{r fig.cap = "Plot of standardized residuals from the fit as a time series with log scale. \\label{fig:four}"}
+plot(rstudent(model),
+     type = "o",
+     ylab = "Standard Residuals",
+     main = "Monthly Unit Sales")
+```
+
+## Part E
+
+```{r}
+month <- season(winnebago)
+winCombo <- lm(winnLog~month + time(winnLog))
+summary(winCombo)
+```
+
+Many of the month coefficients are statistically significant. All months but October, November, and December are not statistically significant. This is because their p-values were too high (greeter than 0.10). 
+
+## Part F
+
+Figure \ref{fig:five} shows the standardized residuals from the combined fit. The residuals appear to be centered around mean zero.
+
+```{r fig.cap="Plot of standardized residuals from the combined fit as a time series. \\label{fig:five}"}
+plot(rstudent(winCombo), 
+     type = "o", 
+     ylab = "Standard Residuals", 
+     main ="Monthly Unit Sales")
+```
+
+
+# Problem 3.8
+
+Load the data.
+
+```{r}
+data(retail)
+```
+
+## Part A
+
+Figure \ref{fig:six} shows the time series data with seasonal markers. There is clear seasonality where December has the highest sales. The overall sales is positively increasing.
+
+```{r fig.cap= "The time series plot of the retail data with seasonal symbols. \\label{fig:six}"}
+plot(retail,
+     type = "l",
+     ylab = "Billions of Pounds",
+     main = "Retail Sales over Time")
+points(y=retail,
+       x=time(retail), 
+       pch=as.vector(season(retail)))
+```
+
+
+## Part B
+
+The linear model has many important coefficients. The `summary` of the model shows that every month is statistically significant. This is because they have small p-values (less than 0.05).
+
+```{r}
+retail.lm <- lm(retail~season(retail) + time(retail))
+summary(retail.lm)
+```
+
+
+## Part C
+
+Figure \ref{fig:seven} shows the standardized residuals. The residuals appear symmetric over time, implying that they are centered around mean zero.
+
+```{r fig.cap= "Plot of standardized residuals from the model in Part B \\label{fig:seven}"}
+plot(rstudent(retail.lm),
+     type = "l",
+     ylab = "Standardized Residuals",
+     main = "Retail Sales")
+points(y=rstudent(retail.lm),
+       x=as.vector(time(rstudent(retail.lm))), 
+       pch=as.vector(season(retail)))
+```
+
+
+# Problem 3.9
+
+Load the data.
+
+```{r}
+data(prescrip)
+```
+
+## Part A
+
+Figure \ref{fig:eight} shows the time series plot with seasonal markings. There is an apparent seasonal trend during the summer. The overall trend is positively increasing.
+
+```{r fig.cap= "Time series plot of the monthly prescription costs in the United States \\label{fig:eight}"}
+plot(prescrip,
+     type = "l",
+     ylab = "Presciption Costs",
+     main = "Presciption Costs over Time")
+points(y = prescrip,
+       x = time(prescrip),
+       pch = as.vector(season(prescrip)))
+```
+
+## Part B
+
+Figure \ref{fig:nine} shows the time series plot of the percentage changes in prescription costs with seasonal markers.
+
+```{r fig.cap="Time series of the sequence of month-to-month percentage changes in prescription costs. \\label{fig:nine}"}
+percPrecrip <- na.omit(100*(prescrip - zlag(prescrip))/zlag(prescrip))
+plot(percPrecrip,
+     type = "l",
+     ylab = "Percent Change of Prescription Costs",
+     main = "Percent Change of Prescription Costs over Time")
+points(y = percPrecrip,
+       x = time(percPrecrip),
+       pch = as.vector(season(percPrecrip)))
+```
+
+
+## Part C
+
+```{r}
+prescrip.lm <- lm(percPrecrip ~ harmonic(percPrecrip))
+summary(prescrip.lm)
+```
+
+The `summary` of the data shows that the harmonic cosine coefficient is not statistically significant because the p-value is greater than 0.05. If our alpha values is set to 0.10, then every coefficient would be statistically significant.
+
+## Part D
+
+Figure \ref{fig:ten} shows the standardized residuals of the cosine model. The residuals appear to be centered around mean zero and are fairly random.
+
+```{r fig.cap="Plot of standardized residuals of the cosine model. \\label{fig:ten}"}
+plot(rstudent(prescrip.lm),
+     type = "l",
+     ylab = "Standardized Residuals",
+     main = "Presciption Costs")
+points(y=rstudent(prescrip.lm),
+       x=as.vector(time(rstudent(prescrip.lm))), 
+       pch=as.vector(season(prescrip)))
+```
+
+# Problem 3.13
+
+Load the data.
+
+```{r}
+data("retail")
+```
+
+## Part A
+
+```{r}
+winnebago.lm <- lm(winnebago~season(log(winnebago)) + time(log(winnebago)))
+```
+
+## Part B
+
+```{r}
+runs(rstudent(winnebago.lm))
+```
+
+The `runs` test suggest a lack of independence in the error terms in the model.
+
+## Part C
+
+Figure \ref{fig:eleven} shows the ACF plot of the combined Winnebago model. The residuals of lags one, two, three, and five suggest significant positive auto-correlation.
+
+```{r fig.cap="ACF plot of combined Winnebago model residuals \\label{fig:eleven}"}
+acf(rstudent(winnebago.lm))
+```
+
+## Part D
+
+Figure \ref{fig:twelve} suggests that the distribution of the standardized residuals of the combined Winnebago model is right skewed. Figure \ref{fig:thirteen} suggests the same.
+
+```{r fig.cap="Histogram of combined Winnebago model residuals. \\label{fig:twelve}"}
+hist(rstudent(winnebago.lm),
+     xlab = "Standardized Residuals",
+     main = "Historgram of Standardized Residuals")
+```
+
+```{r fig.cap="QQ plot of combined Winnebago model residuals.\\label{fig:thirteen}"}
+qqnorm(rstudent(winnebago.lm))
+qqline(rstudent(winnebago.lm))
+```
+
+
+# Problem 3.14
+
+Load the data.
+
+```{r}
+data("retail")
+```
+
+## Part A
+
+```{r}
+retail.lm <- lm(retail~season(retail) + time(retail))
+```
+
+## Part B
+
+```{r}
+runs(rstudent(retail.lm))
+```
+
+The `runs` test suggest a lack of independence in the error terms in the model.
+
+## Part C
+
+```{r fig.cap="ACF plot for combined retail model.\\label{fig:fourteen}"}
+acf(rstudent(retail.lm))
+```
+
+Figure \ref{fig:fourteen} suggest significant positive auto-correlation at lags one, eleven, twelve, thirteen, and twenty-four.
+
+## Part D
+
+Figure \ref{fig:fifteen} suggests that the distribution of the standardized residuals of the combined retail model is relatively normal. Figure \ref{fig:sixteen} suggests the same.
+
+
+```{r fig.cap="Histogram of standardized residuals of combined retail model. \\label{fig:fifteen}"}
+hist(rstudent(retail.lm),
+     xlab = "Standardized Residuals",
+     main = "Historgram of Standardized Residuals")
+```
+
+```{r fig.cap="QQ plot of standardized residuals of combined retail model.\\label{fig:sixteen}"}
+qqnorm(rstudent(retail.lm))
+qqline(rstudent(retail.lm))
+```
+
+# Problem 3.15
+Load the data.
+
+```{r}
+data("prescrip")
+```
+
+## Part A
+```{r}
+percPrecrip <- na.omit(100*(prescrip - zlag(prescrip))/zlag(prescrip))
+prescrip.lm <- lm(percPrecrip ~ harmonic(percPrecrip))
+```
+
+## Part B
+```{r}
+runs(rstudent(prescrip.lm))
+```
+
+The `runs` test suggest a lack of independence in the error terms in the model.
+
+## Part C
+
+Figure \ref{fig:seventeen} suggests significant negative auto-correlation at lags one and thirteen.
+
+```{r fig.cap="ACF plot for the precription model.\\label{fig:seventeen}"}
+acf(rstudent(prescrip.lm))
+```
+
+
+## Part D
+
+Figure \ref{fig:eighteen} suggests that the distribution of the standardized residuals of the combined retail model is relatively normal. Figure \ref{fig:nineteen} suggests the same.
+
+```{r fig.cap="Histogram of standardized residuals of combined retail model. \\label{fig:eighteen}"}
+hist(rstudent(prescrip.lm),
+     xlab = "Standardized Residuals",
+     main = "Historgram of Standardized Residuals")
+```
+
+```{r fig.cap="QQ plot of standardized residuals of combined retail model.\\label{fig:nineteen}"}
+qqnorm(rstudent(prescrip.lm))
+qqline(rstudent(prescrip.lm))
+```
