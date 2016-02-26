@@ -87,10 +87,10 @@ permit.lm <- lm(permit~time(permit))
 permit.resid <- resid(permit.lm)
 
 # Part C
-plot(permit.resid,
+plot(rstudent(permit.lm),
      type = "o",
      ylab = "Raw Residuals",
-     main = "REsiduals of New Residential Construction over Time")
+     main = "Residuals of New Residential Construction over Time")
 
 # Part D
 permit.resid.lm <- lm(permit.resid~time(permit.resid))
@@ -141,13 +141,13 @@ vmt.coslm <- lm(vmt~harmonic(vmt,1))
 vmt.resid <- resid(vmt.coslm)
 
 # Part C
-plot(vmt.resid,
+plot(rstudent(vmt.coslm),
      type = "o",
      ylab = "Raw Residuals",
      main = "Residuals of Vehicle Miles Traveled over Time")
 
 # Part D
-vmt.resid.coslm <- lm(vmt.resid~poly(vmt.resid,3))
+vmt.resid.coslm <- lm(vmt.resid~time(vmt.resid)+time(vmt.resid)^2+time(vmt.resid^3))
 plot(vmt.resid.coslm, which=1)
 
 ## Parts i and ii

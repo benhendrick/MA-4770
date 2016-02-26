@@ -1,0 +1,495 @@
+---
+title: "MA 4780 Take Home Exam 1"
+author: "Benjamin Hendrick"
+date: "February 25, 2016"
+output:
+  pdf_document:
+    fig_caption: yes
+---
+
+# Problem 1
+
+## Part A
+
+### (i)
+
+The MA(2) process $Y_{t} = e_{t} + 0.8e_{t-1} - 0.1e_{t-2}$ can be set in `R` as such.
+
+```{r}
+y <- ARMAacf(ma = c(-0.8,0.1), lag.max = 20)
+```
+
+Plot the MA(2) using the `plot` and `abline` commands.
+
+```{r, fig.cap="ACF plot of the MA(2) population.\\label{ma2.acf.pop}"}
+plot(y, x = 0:20, 
+     type = "h", 
+     ylim = c(-1,1), 
+     xlab = "k", 
+     ylab = "Autocorrelation", 
+     main = "Population ACF of an MA(2) model with coefficients 0.8 and -0.1")
+abline(h=0)
+```
+
+Figure \ref{ma2.acf.pop} shows the population ACF plot of the MA(2) process. The ACF plot has only three non-zero lags (at lag zero, one, two). The first lag has a significantly negative auto-correlation.
+
+### (ii)
+
+Set up the variables and sample size $n=100$ in `R`. Fit the MA(2) process using the `lm` function.
+```{r}
+set.seed(12345)
+n <- 100
+e <- rnorm(n+1)
+y <- ts(e[3:(n+2)]+0.8*e[2:(n+1)]-0.1*e[1:n])
+fm <- lm(y~1)
+```
+
+
+Use the `acf` function to create the ACF plot of the sample MA(2) process.
+
+```{r, fig.cap = "ACF plot of sample MA(2) process with a sample size of 100.\\label{ma2.sample.acf}"}
+acf(resid(fm),main ="Sample ACF plot for the MA(2) model with coefficients 0.8 and -0.1")
+```
+
+The sample ACF plot in Figure \ref{ma2.sample.acf} differs from the population ACF plot in Figure \ref{ma2.acf.pop} slightly. The population ACF plot is zero from lag 3 onward. The sample ACF plot has a sinusoidal quality to it.
+
+### (iii)
+
+The follow code blocks creates new unique sample ACF plots.
+
+```{r, fig.cap="Sample MA(2) ACF plot 1/5 \\label{sample.acf1}"}
+set.seed(1)
+n <- 100
+e <- rnorm(n+1)
+y <- ts(e[3:(n+2)]+0.8*e[2:(n+1)]-0.1*e[1:n])
+fm <- lm(y~1)
+acf(resid(fm),main ="Sample ACF plot for the MA(2) model with coefficients 0.8 and -0.1")
+```
+
+The sample ACF plot in Figure \ref{sample.acf1.ar1} does not share the same shape as the population ACF. The autocorrelations go negative much faster than previous plots.
+
+```{r, fig.cap="Sample MA(2) ACF plot 2/5 \\label{sample.acf2}"}
+set.seed(2)
+n <- 100
+e <- rnorm(n+1)
+y <- ts(e[3:(n+2)]+0.8*e[2:(n+1)]-0.1*e[1:n])
+fm <- lm(y~1)
+acf(resid(fm),main ="Sample ACF plot for the MA(2) model with coefficients 0.8 and -0.1")
+```
+
+The sample ACF plot in Figure \ref{sample.acf2} does not share the same shape as the population ACF. There is significant positive auto-correlation at lag one.
+
+```{r, fig.cap="Sample MA(2) ACF plot 3/5 \\label{sample.acf3}"}
+set.seed(3)
+n <- 100
+e <- rnorm(n+1)
+y <- ts(e[3:(n+2)]+0.8*e[2:(n+1)]-0.1*e[1:n])
+fm <- lm(y~1)
+acf(resid(fm),main ="Sample ACF plot for the MA(2) model with coefficients 0.8 and -0.1")
+```
+
+The sample ACF plot in Figure \ref{sample.acf3} does not share the same shape as the population ACF. There is significant positive auto-correlation at lag one.
+
+```{r, fig.cap="Sample MA(2) ACF plot 4/5 \\label{sample.acf4}"}
+set.seed(4)
+n <- 100
+e <- rnorm(n+1)
+y <- ts(e[3:(n+2)]+0.8*e[2:(n+1)]-0.1*e[1:n])
+fm <- lm(y~1)
+acf(resid(fm),main ="Sample ACF plot for the MA(2) model with coefficients 0.8 and -0.1")
+```
+
+The sample ACF plot in Figure \ref{sample.acf4} does not share the same shape as the population ACF. There is significant positive auto-correlation at lag one.
+
+```{r, fig.cap="Sample MA(2) ACF plot 5/5 \\label{sample.acf5}"}
+set.seed(5)
+n <- 100
+e <- rnorm(n+1)
+y <- ts(e[3:(n+2)]+0.8*e[2:(n+1)]-0.1*e[1:n])
+fm <- lm(y~1)
+acf(resid(fm),main ="Sample ACF plot for the MA(2) model with coefficients 0.8 and -0.1")
+```
+
+The sample ACF plot in Figure \ref{sample.acf5} does not share the same shape as the population ACF. There is significant positive auto-correlation at lag one.
+
+## Part B
+
+### (i)
+
+The AR(1) process $Y_{t} = 0.9Y_{t-1}+e_{t}$ can be set in `R` as such.
+
+```{r}
+y <- ARMAacf(ar = 0.9, lag.max = 20)	
+```
+
+Plot the AR(1) using the `plot` and `abline` commands.
+
+```{r, fig.cap="ACF plot of the AR(1) population.\\label{ar1.acf.pop}"}
+plot(y, x = 0:20, 
+     type = "h", 
+     ylim = c(-1,1), 
+     xlab = "k", 
+     ylab = "Autocorrelation", 
+     main = "Population ACF of an AR(1) model with coefficient 0.9")
+abline(h=0)
+```
+
+Figure \ref{ar1.acf.pop} shows the population ACF plot of the AR(1) process. The ACF plot has not outstanding lags and decreases toward zero, never crossing zero. Many of the lower $k$ lags are significantly auto-correlated.
+
+### (ii)
+
+Set up the variables and sample size $n=100$ in `R`. Fit the AR(1) process using the `lm` function.
+```{r}
+set.seed(2190)
+n = 100
+e = rnorm(n+1)
+phi1 = 0.9
+y = rep(0,n); y[1] = e[1];
+for (i in 2:n){ y[i] = phi1*y[i-1]+e[i]}
+```
+
+
+Use the `acf` function to create the ACF plot of the sample MA(2) process.
+
+```{r, fig.cap = "ACF plot of sample AR(1) process with a sample size of 100.\\label{ar1.sample.acf}"}
+acf(y,main="Sample ACF of an AR(1) model with coefficient 0.9")
+```
+
+The sample ACF plot in Figure \ref{ar1.sample.acf.ac1} is not too different from the population ACF plot in Figure \ref{ar1.acf.pop}. Both plots have decreasing auto-correlations whic are significantly positive until about lag 13. However, the sample ACF plot has negative auto-correlation after lag 17. This is not the case in the population ACF plot.
+
+### (iii)
+
+The follow code blocks creates new unique sample ACF plots.
+
+```{r, fig.cap="Sample AR(1) ACF plot 1/5 \\label{sample.acf1.ar1}"}
+  set.seed(1)
+  n = 100
+  e = rnorm(n+1)
+  phi1 = 0.9
+  y = rep(0,n); y[1] = e[1];
+  for (i in 2:n){ y[i] = phi1*y[i-1]+e[i]}
+  acf(y,main="Sample ACF of an AR(1) model with coefficient 0.9")
+```
+
+The sample ACF plot in Figure \ref{sample.acf1.ar1} does not share the same shape as the population ACF. There is significant positive auto-correlation at lag one.
+
+```{r, fig.cap="Sample AR(1) ACF plot 2/5 \\label{sample.acf2.ar1}"}
+  set.seed(2)
+  n = 100
+  e = rnorm(n+1)
+  phi1 = 0.9
+  y = rep(0,n); y[1] = e[1];
+  for (i in 2:n){ y[i] = phi1*y[i-1]+e[i]}
+  acf(y,main="Sample ACF of an AR(1) model with coefficient 0.9")
+```
+
+The sample ACF plot in Figure \ref{sample.acf2.ar1} does not share the same shape as the population ACF. The auto-correlation deacres and increases as the significance level before becoming negative.
+
+```{r, fig.cap="Sample AR(1) ACF plot 3/5 \\label{sample.acf3.ar1}"}
+  set.seed(3)
+  n = 100
+  e = rnorm(n+1)
+  phi1 = 0.9
+  y = rep(0,n); y[1] = e[1];
+  for (i in 2:n){ y[i] = phi1*y[i-1]+e[i]}
+  acf(y,main="Sample ACF of an AR(1) model with coefficient 0.9")
+```
+
+The sample ACF plot in Figure \ref{sample.acf3.ar1} does not share the same shape as the population ACF. The auto-correlation goes negative at lag 13 and continues to decrease into significant negative auto-correlation.
+
+```{r, fig.cap="Sample AR(1) ACF plot 4/5 \\label{sample.acf.ar1}"}
+  set.seed(4)
+  n = 100
+  e = rnorm(n+1)
+  phi1 = 0.9
+  y = rep(0,n); y[1] = e[1];
+  for (i in 2:n){ y[i] = phi1*y[i-1]+e[i]}
+  acf(y,main="Sample ACF of an AR(1) model with coefficient 0.9")
+```
+
+The sample ACF plot in Figure \ref{sample.acf4.ar1} does not share the same shape as the population ACF. The plot is similar, but still decreases toward zero negative auto-correlation. This is a large difference.
+
+```{r, fig.cap="Sample AR(1) ACF plot 5/5 \\label{sample.acf5.ar1}"}
+  set.seed(5)
+  n = 100
+  e = rnorm(n+1)
+  phi1 = 0.9
+  y = rep(0,n); y[1] = e[1];
+  for (i in 2:n){ y[i] = phi1*y[i-1]+e[i]}
+  acf(y,main="Sample ACF of an AR(1) model with coefficient 0.9")
+```
+
+The sample ACF plot in Figure \ref{sample.acf5.ar1} does not share the same shape as the population ACF. The auto-correlation goes negative at lag 13 and continues to decrease into significant negative auto-correlation.
+
+# Question 2
+
+Load the data into `R` and clean the time series.
+
+```{r}
+library(TSA)
+filePath <- "~/GitHub/MA-4780/Exam 1/Exam1-permit.csv"
+permit <- read.csv(filePath, header=FALSE)
+permit <- ts(permit$V2, start = c(1991,1), end = c(2005,12), frequency = 12)
+```
+
+## Part A
+
+Plot the data with the `plot` funciton and create the seasonal points with the `points` function.
+
+```{r, fig.cap="Time series plot the permit data with seasonal point markers.\\label{permit.plot}"}
+plot(permit,
+     type="l",
+     ylab="New Residential Construction",
+     xlab="Time",
+     main="New Residential Constrution over Time")
+points(y = permit,
+       x = time(permit),
+       pch = as.vector(season(permit)))
+```
+
+Figure \ref{permit.plot} shows the plot of the time series of the `permit` data set. The trend of the data is increasing. There is seasonality where there are peaks in July and trouhs in Janurary. 
+
+## Part B
+
+Fit the regression function of the seasonal means model is found using the `lm` function. The residuals are found using the `resid` function
+
+```{r}
+permit.lm <- lm(permit~season(permit))
+summary(permit.lm)$coefficients
+permit.resid <- resid(permit.lm)
+```
+
+The coefficients of the regression function are all significant because their p-values are less than $\alpha = 0.05$ (and even $\alpha=0.01$). This means that each coefficient is non-zero and can be used in the model.
+
+## Part C
+
+Plot the residuals `permit.resid` using the `plot` function.
+
+```{r, fig.cap="Residuals of New Residential Construction over Time\\label{permit.resid.plot}"}
+plot(permit.resid,
+     type = "o",
+     ylab = "Raw Residuals",
+     main = "Reesiduals of New Residential Construction over Time")
+```
+
+The residual plot in Figure \ref{permit.resid.plot} has a positive trend over time. There is not a strong indication of seasonality in the residuals. Although it is not necessarily homoscedastic, the residuals appear to have random variance.
+
+## Part D
+
+Fit the residuals to a regression model by using the `lm` funcitin.
+
+```{r}
+permit.resid.lm <- lm(permit.resid~time(permit.resid))
+```
+
+Plot the residuals against the fitted values by using the `plot` function.
+
+```{r, fig.cap="Plot of permit residuals vs. fitted values \\label{permit.resid.v.fitted"}
+plot(permit.resid.lm, which=1)
+```
+
+Find the summary of the residuals model by using the `summary` function.
+```{r}
+summary(permit.resid.lm)
+```
+
+
+### (i) 
+
+The p-value of the F-statistic is $<2.2e-16$. Because it is less than $\alpha=0.05$, we can say that the linear model is significant. Similarly, both coeficients are significant becasause their p-values are both less than $\alpha=0.05$.
+
+### (ii)
+
+The estimated slope of the linear model is 0.51159.
+
+### (iii)
+
+The estimated slope can be interpreted by saying that the expected value of the error of the seasonal trends model increases by 0.51159 for every unit time.
+
+## Part E
+
+### (i)
+
+Check if the error process has mean equal zero.
+
+```{r}
+mean(fitted(permit.resid.lm))
+```
+
+By a rounding error, the mean is effectively zero. Therefore the assumption holds.
+
+### (ii)
+
+Check if the errors are independent.
+
+```{r}
+runs(rstudent(permit.resid.lm))[1]
+```
+
+The runs test suggests a lack of independence in the errors beacuse the p-value is less than $\alpha = 0.05$.
+
+### (iii)
+
+Plot the fitted residuals using the `plot` function to see if the error is homogenous.
+
+```{r, fig.cap="Plot of Fitted Residuals for Permit Data \\label{permit.resid.fitted.plot}"}
+plot(fitted(permit.resid.lm),
+     type = "o",
+     xlab = "Index",
+     ylab = "Fitted Residuals",
+     main = "Plot of Fitted Residuals")
+```
+
+Based on the plot in Figure \ref{permit.resid.fitted.plot} the errors are homogenous.
+
+### (iv)
+
+Plot the normal probability plot of the residuals linear model by using the `plot` funciton.
+
+```{r, fig.cap="Normal Probability Plot of Permit Residuals\\label{permit.resid.qq}"}
+plot(permit.resid.lm, which=2)
+```
+
+Create a histogram of the fitted regression errors with the `hist` function.
+
+```{r, fig.cap="Histograpm of Permit Residuals \\label{permit.resid.hist}"}
+hist(fitted(permit.resid.lm),
+     xlab = "Fitted Linear Error Process",
+     main = "Histogram of Fitted Linear Error Process")
+```
+
+Based on the normal probability plot and the histogram in Figure \ref{permit.resid.qq} and \ref{permit.resid.hst}, the fitted errors do not appear to be normally distributed well. The distribution is still symetric, but just very wide.
+
+# Problem 3
+
+Load the data into `R` and clean the time series.
+
+```{r}
+library(TSA)
+filePath <- "~/GitHub/MA-4780/Exam 1/Exam1-VMT.csv" # Mac
+vmt <- read.csv(filePath, header=FALSE)
+vmt <- ts(vmt, start = c(2000,1), end = c(2015,12), frequency = 12)
+```
+
+## Part A
+
+Plot the data with the `plot` funciton and create the seasonal points with the `points` function.
+
+```{r, fig.cap="Time series plot the permit data with seasonal point markers.\\label{vmt.plot}"}
+plot(vmt,
+     type="l",
+     ylab="Vehicle Miles Traveled",
+     xlab="Time",
+     main="Vehicle Miles Traveled over Time")
+points(y = vmt,
+       x = time(vmt),
+       pch = as.vector(season(vmt)))
+```
+
+Figure \ref{vmt.plot} shows the plot of the time series of the `vmt` data set. The trend of the data is cyclic. There is seasonality where there are peaks in August and trouhs in February. 
+
+## Part B
+
+Fit the regression function of the cosine model is found using the `lm` function. The residuals are found using the `resid` function
+
+```{r}
+vmt.coslm <- lm(vmt~harmonic(vmt,1))
+summary(vmt.coslm)$coefficients
+vmt.resid <- resid(vmt.coslm)
+```
+
+The coefficients of the regression function are all significant because their p-values are less than $\alpha = 0.05$ (and even $\alpha=0.01$). This means that each coefficient is non-zero and can be used in the model.
+
+## Part C
+
+Plot the residuals `permit.resid` using the `plot` function.
+
+```{r, fig.cap="Residuals of Vehicle Miles Traveled over Time\\label{vmt.resid.plot}"}
+plot(vmt.resid,
+     type = "o",
+     ylab = "Raw Residuals",
+     main = "Residuals of Vehicle Miles Traveled over Time")
+```
+
+The residual plot in Figure \ref{permit.resid.plot} has a positive trend over time. The trend is also a little sinusoidal. The variance of the residuals does not appear to be constant.
+
+## Part D
+
+Fit the residuals to a regression model by using the `lm` funcitin.
+
+```{r}
+vmt.resid.coslm <- lm(vmt.resid~time(vmt.resid)+time(vmt.resid)^2+time(vmt.resid)^3)
+```
+
+Plot the residuals against the fitted values by using the `plot` function.
+
+```{r, fig.cap="Plot of vmt residuals vs. fitted values \\label{vmtresid.v.fitted"}
+plot(vmt.resid.coslm, which=1)
+```
+
+Find the summary of the residuals model by using the `summary` function.
+```{r}
+summary(vmt.resid.coslm)
+```
+
+### (i) 
+
+The first coefficient of the cubic trend is significant because it has a p-value much less than $\alpha = 0.05$. However, neither coefficients two or three are significant because they have p-values greater than $\alpha = 0.05$. 
+### (ii)
+
+The proportion of variability of the cubic trend is $R^{2} = 0.294$.
+
+
+## Part E
+
+### (i)
+
+Check if the error process has mean equal zero.
+
+```{r}
+mean(fitted(vmt.resid.coslm))
+```
+
+By a rounding error, the mean is effectively zero. Therefore the assumption holds.
+
+### (ii)
+
+Check if the errors are independent.
+
+```{r}
+runs(rstudent(vmt.resid.coslm))[1]
+```
+
+The runs test suggests independence in the errors beacuse the p-value is greater than $\alpha = 0.05$.
+
+### (iii)
+
+Plot the fitted residuals using the `plot` function to see if the error is homogenous.
+
+```{r, fig.cap="Plot of Fitted Residuals for Permit Data \\label{vmt.resid.fitted.plot}"}
+plot(fitted(vmt.resid.coslm),
+     type = "o",
+     xlab = "Index",
+     ylab = "Fitted Residuals",
+     main = "Plot of Fitted Residuals")
+```
+
+Based on the plot in Figure \ref{vmt.resid.fitted.plot} the errors are not homogenous.
+
+### (iv)
+
+Plot the normal probability plot of the residuals linear model by using the `plot` funciton.
+
+```{r, fig.cap="Normal Probability Plot of Permit Residuals\\label{vmt.resid.qq}"}
+plot(vmt.resid.coslm, which=2)
+```
+
+Create a histogram of the fitted regression errors with the `hist` function.
+
+```{r, fig.cap="Histograpm of Permit Residuals \\label{permit.resid.hist}"}
+hist(fitted(vmt.resid.coslm),
+     xlab = "Fitted Linear Error Process",
+     main = "Histogram of Fitted Linear Error Process")
+```
+
+Based on the normal probability plot and the histogram in Figure \ref{permit.resid.qq} and \ref{permit.resid.hst}, the fitted errors appear to be normally distributed.
