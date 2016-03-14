@@ -9,7 +9,8 @@ sketchMA2 <- function(theta1, theta2) {
        ylim = c(-1,1), 
        xlab = "k", 
        ylab = "Autocorrelation", 
-       main = paste("Population ACF of an MA(2) model with coefficiens ", theta1, " and ", theta2))
+       main = paste("Population ACF of an MA(2) model with coefficiens ", 
+                    theta1, " and ", theta2))
   abline(h=0)
 }
 
@@ -65,3 +66,24 @@ recursiveAR2(0.5,-0.9,20)
 recursiveAR2(-0.5,-0.6,20)
 
 # Problem 4.12
+# Part A
+theta1 <- 1/6
+theta2 <- theta1
+rho1 <- (-theta1 + theta1*theta2)/(1+theta1^2+theta2^2)
+rho2 <- (-theta2)/(1+theta1^2+theta2^2)
+
+theta1 <- -1
+theta2 <- 6
+rho1 <- (-theta1 + theta1*theta2)/(1+theta1^2+theta2^2)
+rho2 <- (-theta2)/(1+theta1^2+theta2^2)
+
+# Part B
+
+
+# Problem 4.15
+
+# Problem 4.16
+
+# Problem 4.18
+
+# PRoblem 4.19

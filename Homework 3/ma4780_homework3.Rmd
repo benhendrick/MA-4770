@@ -1,0 +1,259 @@
+---
+title: "MA 4870 Homework 3"
+author: "Benjamin Hendrick"
+date: "March 13, 2016"
+output: 
+  pdf_document:
+    fig_caption: yes
+---
+
+# Exercise 4.2
+
+The following `R` function, `sketchMA2`, sketches autocorrelation functions for MA(2) processes. 
+
+```{r}
+sketchMA2 <- function(theta1, theta2) {
+  y <- ARMAacf(ma = c(-theta1,-theta2), lag.max = 20)
+  plot(y, x = 0:20, 
+       type = "h", 
+       ylim = c(-1,1), 
+       xlab = "k", 
+       ylab = "Autocorrelation", 
+       main = paste("Population ACF of an MA(2) model with coefficiens ", 
+                    theta1, " and ", theta2))
+  abline(h=0)
+}
+```
+
+## Part A
+
+Sketch the autocorrelation function for the MA(2) process where $\theta_{1} = 0.5$ and $\theta_{2} = 0.4$. The plot is shown in Figure \ref{ma2_1}.
+
+```{r, fig.cap="Population ACF of an MA(2) model with coefficiens  0.5  and  0.4 \\label{ma2_1}"}
+sketchMA2(0.5,0.4)
+```
+
+## Part B
+
+Sketch the autocorrelation function for the MA(2) process where $\theta_{1} = 1.2$ and $\theta_{2} = -0.7$. The plot is shown in Figure \ref{ma2_2}.
+
+```{r, fig.cap="Population ACF of an MA(2) model with coefficiens  1.2  and  -0.7 \\label{ma2_2}"}
+sketchMA2(1.2,-0.7)
+```
+
+## Part C
+
+Sketch the autocorrelation function for the MA(2) process where $\theta_{1} = -1$ and $\theta_{2} = -0.6$. The plot is shown in Figure \ref{ma2_3}.
+
+```{r, fig.cap="Population ACF of an MA(2) model with coefficiens  -1  and  -0.6 \\label{ma2_3}"}
+sketchMA2(-1,-0.6)
+```
+
+# Exercise 4.5
+
+The following `R` function, `sketchAR1`, sketches autocorrelation function for AR(1) processes over a specified number of lags.
+
+```{r}
+sketchAR1 <- function(phi1, lags) {
+  y <- ARMAacf(ar = phi1, lag.max = lags)	
+  plot(y, x = 0:lags, 
+       type = "h", 
+       ylim = c(-1,1), 
+       xlab = "k", 
+       ylab = "Autocorrelation", 
+       main = paste("Population ACF of an AR(2) model with coefficient ", phi1))
+  abline(h=0)
+}
+```
+
+## Part A
+
+Sketch the autocorrelation function for the AR(1) process where $\theta=0.6$. The plot is shown in Figure \ref{ar1_1}.
+
+```{r, fig.cap="Population ACF of an AR(1) model with coefficient 0.6 over 10 lags. \\label{ar1_1}"}
+sketchAR1(0.6, 10)
+```
+
+## Part B
+
+Sketch the autocorrelation function for the AR(1) process where $\theta=-0.6$. The plot is shown in Figure \ref{ar1_2}.
+
+```{r, fig.cap="Population ACF of an AR(1) model with coefficient 0.6 over 10 lags. \\label{ar1_2}"}
+sketchAR1(-0.6, 10)
+```
+
+## Part C
+
+Sketch the autocorrelation function for the AR(1) process where $\theta=0.95$. The plot is shown in Figure \ref{ar1_3}.
+
+```{r, fig.cap="Population ACF of an AR(1) model with coefficient 0.95 over 20 lags. \\label{ar1_3}"}
+sketchAR1(95, 20)
+```
+
+
+## Part D
+
+Sketch the autocorrelation function for the AR(1) process where $\theta=0.3$. The plot is shown in Figure \ref{ar1_4}.
+
+```{r, fig.cap="Population ACF of an AR(1) model with coefficient 0.3 over 5 lags. \\label{ar1_4}"}
+sketchAR1(0.3, 5)
+```
+
+
+# Exercise 4.9
+
+The following `R` function, `recursiveAR2`, uses the recursive formula of Equation 4.3.13 in the text and sketchs the autocorrelation funciton of AR(2) processes.
+
+```{r}
+recursiveAR2 <- function(phi1, phi2, lags) {
+  max.lag = lags
+  rho = rep(0,max.lag)
+  rho[1] = phi1/(1-phi2)
+  rho[2] = (phi2*(1-phi2)+phi1^2)/(1-phi2)
+  for (k in 3:max.lag) {
+    rho[k] = phi1*rho[k-1]+phi2*rho[k-2]
+  }
+  plot(y=c(1,rho), x=0:max.lag, type='h', ylab='ACF', xlab='Lag', ylim=c(-1,+1), 
+       main = paste("Population ACF of an AR(2) model with coefficients ", phi1, " and ", phi2))
+  abline(h=0)
+  
+  results <- list()
+  results$roots <- polyroot(c(1,phi1,phi2))
+  results$class <- class(polyroot(c(1,phi1,phi2)))
+  results$R <- sqrt(-phi2+0i)
+  results$theta <- cospi(-(phi1 * sqrt(-phi2+01))/(2 *phi2))
+  return(results)
+}
+```
+
+## Part A
+
+Sketch the auto correlation plot the recursive AR(2) process with $\phi_{1} = 0.6$ and $\phi_{2} = 0.3$. The plot is found in Figure \ref{ar2_1}.
+
+```{r, fig.cap="Population ACF of an AR(2) model with coefficients  0.6  and  0.3 \\label{ar2_1}"}
+a <- recursiveAR2(0.6,0.3,20)
+```
+
+The roots for the process are (`r a$roots`). The roots are `r a$class`. The damping factor $R$ equals `r a$R`. The frequency $\theta$ equals `r a$theta`.
+
+## Part B
+
+Sketch the auto correlation plot the recursive AR(2) process with $\phi_{1} = -0.4$ and $\phi_{2} = 0.5$. The plot is found in Figure \ref{ar2_2}.
+
+```{r, fig.cap="Population ACF of an AR(2) model with coefficients  -0.4  and  0.5 \\label{ar2_2}"}
+b <- recursiveAR2(-0.4,0.5,20)
+```
+
+The roots for the process are (`r b$roots`). The roots are `r b$class`. The damping factor $R$ equals `r b$R`. The frequency $\theta$ equals `r b$theta`.
+
+## Part C
+
+Sketch the auto correlation plot the recursive AR(2) process with $\phi_{1} = 1.2$ and $\phi_{2} = -0.7$. The plot is found in Figure \ref{ar2_3}.
+
+```{r, fig.cap="Population ACF of an AR(2) model with coefficients  1.2  and  -0.7 \\label{ar2_3}"}
+c <- recursiveAR2(1.2,-0.7,20)
+```
+
+The roots for the process are (`r c$roots`). The roots are `r c$class`. The damping factor $R$ equals `r c$R`. The frequency $\theta$ equals `r c$theta`.
+
+
+## Part D
+
+Sketch the auto correlation plot the recursive AR(2) process with $\phi_{1} = -1$ and $\phi_{2} = -0.6$. The plot is found in Figure \ref{ar2_4}.
+
+```{r, fig.cap="Population ACF of an AR(2) model with coefficients  -1  and  -0.6 \\label{ar2_4}"}
+d <- recursiveAR2(-1,-0.6,20)
+```
+
+The roots for the process are (`r d$roots`). The roots are `r d$class`. The damping factor $R$ equals `r d$R`. The frequency $\theta$ equals `r d$theta`.
+
+## Part E
+
+Sketch the auto correlation plot the recursive AR(2) process with $\phi_{1} = 0.5$ and $\phi_{2} = -0.9$. The plot is found in Figure \ref{ar2_5}.
+
+```{r, fig.cap="Population ACF of an AR(2) model with coefficients  0.5  and  -0.9 \\label{ar2_5}"}
+e <- recursiveAR2(0.5,-0.9,20)
+```
+
+The roots for the process are (`r e$roots`). The roots are `r e$class`. The damping factor $R$ equals `r e$R`. The frequency $\theta$ equals `r e$theta`.
+
+## Part F
+
+Sketch the auto correlation plot the recursive AR(2) process with $\phi_{1} = -0.5$ and $\phi_{2} = -0.6$. The plot is found in Figure \ref{ar2_6}.
+
+```{r, fig.cap="Population ACF of an AR(2) model with coefficients  -0.5  and  -0.6 \\label{ar2_6}"}
+f <- recursiveAR2(-0.5,-0.6,20)
+```
+
+The roots for the process are (`r f$roots`). The roots are `r f$class`. The damping factor $R$ equals `r f$R`. The frequency $\theta$ equals `r f$theta`.
+
+# Exercise 4.12
+
+## Part A
+
+Use the formula into Equation 4.2.3 from the text. When $\theta_{1} = \theta_{2} = \frac{1}{6}$, 
+
+$$\rho_{1} = \frac{-\theta_{1} + \theta_{1}\theta_{2}}{1+\theta_{1}^{2}+\theta_{2}^{2}} = \frac{-1/6 + 1/6(1/6)}{1+1/6^{2}+1/6^{2}} = -0.1315789$$
+
+and 
+
+$$\rho_{2} = \frac{-\theta_{2}}{1+\theta_{1}^{2}+\theta_{2}^{2}} = \frac{-1/6}{1+1/6^{2}+1/6^{2}} = -0.1578947$$
+
+When $\theta_{1} = -1$ and $\theta_{2} = 6$,
+
+$$\rho_{1} = \frac{-\theta_{1} + \theta_{1}\theta_{2}}{1+\theta_{1}^{2}+\theta_{2}^{2}} = \frac{1 - 1(6)}{1+(-1)^{2}+6^{2}} = -0.1315789$$
+
+and 
+
+$$\rho_{2} = \frac{-\theta_{2}}{1+\theta_{1}^{2}+\theta_{2}^{2}} = \frac{-6}{1+(-1)^{2}+6^{2}} = -0.1578947$$
+
+Therefore, the autocorrelation functions are the same because $\rho_{1}$ and $\rho_{2}$ are the same for each set of $\theta_{1}$ and $\theta_{2}$.
+
+## Part B
+
+One of the roots is $1-\frac{1}{6}x -\frac{1}{6}x^{2} = -\frac{1}{6}(x+3)(x-2)$ and the other is $1+x-6x^{2} = -6(x+\frac{1}{3})(x-\frac{1}{2})$. The roots of the two polynomials are reciprocals of each other. 
+
+# Exercise 4.15
+
+Suppose $\{Y_{t}\}$ is stationary. $Var(Y_{t}) = \sigma_{e}^{2}/(1-\phi^{2})$. Therefore, if $|\phi| = 1$ is impossible. This is a contridiction and is therefore proved.
+
+# Exercise 4.16
+
+## Part A
+
+$$Y_{t} = 3 Y_{t-1} + e_{t} = 3 (3 Y_{t-2} + e_{t-1}) + e_{t} \Rightarrow 3^{j} Y_{t} = -\sum_{j=1}^{\infty} e_{t+j} \Rightarrow Y_{t} = -\sum_{j=1}^{\infty} (\frac{1}{3})^{j} e_{t+j}$$
+
+## Part B
+
+$$\mu = E(Y_{t}) = E(e_{t} + \ldots) = 0$$
+
+$$Cov(Y_{t},Y_{t-1}) = \frac{(1/3)\sigma_{e}^{2}}{1-(1/3)^{2}}$$ 
+
+The autocovariance is found using the steps in equaion 4.1.2 and 4.1.3 in th text.
+
+
+## Part C 
+
+The model is unsatisfactory because $Y_{t}$ at time $t$ depends on future error terms.
+
+# Exercise 4.18
+
+## Part A
+
+$$E(W_{t}) = E(Y_{t} + c\phi^{t}) = 0 + c\phi^{t} = \phi^{t}$$
+
+## Part B
+
+$Y_{t} = c\phi^{t} = \phi[Y_{t-1}+c\phi^{t-1}]+e_{t}$ is valid since the terms $c\phi^{t}$ cancel on both sides.
+
+## Part C
+
+The solution is not stationary because $E(W_{t}) = c\phi^{t}$ depends on $t$.
+
+# Exercise 4.19
+There are a couple things to take note of. (1) The coefficients decrease exponentially in magnitude at rate 0.5 while alternating signs. (2) The coefficients are nearly died out by $\theta_{6}$. 
+
+Therefore, an AR(1) process with $\phi=-0.5$ would nearly be the same process.
+
+# Exercise 4.20
+Thre are a few things to take note of. (2) The coefficients decrease exponentially in magnitude ate rate 0.5 while alternating signs. (2) The coefficients are nearly died out by $\theta_{7}$. Equation 4.4.6 in the text suggests that an ARMA(1,1) with $\phi = -0.5$ and $\theta=0.5$ would nearly be the same.
