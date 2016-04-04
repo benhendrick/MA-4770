@@ -1,0 +1,206 @@
+---
+title: "MA 4780 Homework 4"
+author: "Benjamin Hendrick"
+date: "April 3, 2016"
+output: pdf_document
+---
+
+# Exercise 5.1
+## Part A
+
+Given $Y_{t} = Y_{t-1} - 0.25 Y_{t-2} + e_{t} - 0.1 e_{t-1}$:
+
+$$p = 1$$
+$$d = 2$$
+$$q = 2$$
+$$\phi_{1} = 1, \phi_{2} = 0.25$$
+$$\theta_{1} = 0.1$$
+
+## Part B
+
+Given $Y_{t} = 2 Y_{t-1} - Y_{t-2} + e_{t}$:
+
+$$p = 1$$
+$$d = 2$$
+$$q = 1$$
+$$\phi_{1} = 2, \phi_{2} = 1$$
+$$\theta_{1} = 0$$
+
+## Part C
+
+Given $Y_{t} = 0.5 Y_{t-1} - 0.5Y_{t-2} + e_{t} - 0.5e_{t-1} + 0.25 e_{t-2}$:
+
+$$p = 1$$
+$$d = 2$$
+$$q = 2$$
+$$\phi_{1} = 0.5, \phi_{2} = 0.5$$
+$$\theta_{1} = 0.1, \theta_{2} = -0.25$$
+
+# Exercise 5.12
+```{r, include=FALSE}
+library(TSA)
+data("SP")
+```
+## Part A
+```{r}
+plot(SP, 
+     ylab = "Stock Price ($)", 
+     main = "Standard & Poor's Compositive Index")
+```
+
+## Part B
+```{r}
+SP.ln <- log(SP)
+plot(SP.ln,
+     ylab = "Natuaral Log Stock Price ($)",
+     main = "Standard & Poor's Compositive Index")
+```
+
+Taking the natural log of the `SP` data scaled the peaks and troughs of the original data. The plot still positively increases, but on a better curve. The data before 1940 is relatively higher on the log graph than on the original.
+
+## Part C
+```{r}
+SP.rel <- diff(SP)/SP
+plot(SP.rel,
+     ylab = "Relative Change Stock Price ($)",
+     main = "Standard & Poor's Compositive Index")
+SP.diff.log <- diff(log(SP))
+plot(SP.diff.log,
+     ylab = "Difference Log Stock Price ($)",
+     main = "Standards & Poor's Compositive Index")
+```
+
+Compared to the larger data, the relative distance and difference log plots do not have a positive increase. They both stay around mean zero.
+
+# Exercise 6.12
+
+Consider MA(2) or MA(3) becasue $2/\sqrt{100} = 0.2$. Assume MA(2). Therefore, $Var(r_{3}) \approx (1+3[(-0.49)^{2}+(0.31)^{2}])/100 = 0.016724$. Then $r_{3}/(\sqrt{Var(r_{3})}) = -1.62$. We don't reject the MA(2) process.
+
+# Exercise 6.13
+
+$2/(\sqrt{121})=0.181$ so an AR(2) model should be entertained.
+
+# Exercise 6.19
+## Part A
+
+The lag one autocorrelation $r_{1}$ for Series A is strongly positively correlated. This is becasue the neighboring points are on the same side of the mean as lag 1.
+ 
+$r_{2}$ for Series B will be strongly negatively correlated because the neighboring points are on the opposite side of the mean. 
+
+## Part B
+
+The lag two autocorrelation $r_{2}$ for Series B is strongly positively correlated. Again, this is because the neighboring points are on the same side of the mean as lag 2.
+
+$r_{2}$ for Series B will be strongly positively correlated because every two neighboring points are on the same side of the mean.
+
+# Exercise 6.26
+## Part A
+
+The theoretical autocorrelation function is 
+
+$$\rho_{1} = -\theta / (1+\theta^{2}) = -0.5/(1+(0.5)^2) = -0.4$$
+
+## Part B
+
+```{r}
+series <- arima.sim(n=48, list(ma=-0.5))
+acf(series)
+```
+
+There is significant correlation at lags 5, 7, and 12. Lag 1 looks okay.
+
+## Part C
+
+```{r}
+theta <- 0.5
+phikk <- rep(NA,10)
+for(i in 1:10) {
+  phikk[i] <- -(theta^i)*(1-theta^2)/(1-theta^(2*(i+1)))
+}
+plot(phikk, type ="h",
+     main = "Theoretical Partial Autocorrelation",
+     xlab = "Lag",
+     ylab = "MA(1)")
+abline(h=0)
+```
+
+## Part D
+
+```{r}
+pacf(series)
+```
+
+Compared to the ACF plot in Part B, the PACF plot shows that there is no significant correlation at lag 5, 7, or 12. However, there is suggested significant negative correlation at lags 4, 6, and 10. Lag 1 is still okay.
+
+# Exercise 6.31
+
+```{r}
+series <- arima.sim(n=60, list(order = c(0,1,1), ma = -0.8))[-1]
+```
+
+## Part A
+
+```{r}
+adf.test(series, k = 0)
+```
+
+The Dickey-Fuller test, when $k=0$, suggests to reject stationarity with a p-value of 0.01.
+
+## Part B
+
+```{r}
+adf.test(series)
+```
+
+The Dickey-Fuller test, when $k=3$ (automatic), fails to reject stationarity with a p-value of 0.2917.
+
+## Part C
+```{r}
+adf.test(diff(series),k=0)
+```
+The Dickey-Fuller test, when $k=0$ and the difference of the series is taken, suggests to reject stationarity with a p-value of 0.01.
+
+
+```{r}
+adf.test(diff(series))
+```
+
+The Dickey-Fuller test, when $k=3$ (automatic) and the difference of the series is taken, suggests to reject stationarity with a p-value of 0.01.
+
+# Exercise 6.36
+
+```{r, include=FALSE}
+data(robot)
+```
+
+## Part A
+```{r}
+plot(robot, main = "Robot Maneuvers", ylab = "Distance (in)")
+```
+The process appears to be nonstationary because of the dip in the trend between lags 250 and 350.
+
+## Part B
+```{r}
+acf(robot)
+pacf(robot)
+```
+
+The ACF and PACF plots appear to come from a nonstationary process because there is significant correlation at many lags in both plots.
+
+## Part C
+```{r}
+eacf(robot)
+```
+
+The EACF suggests an ARMA(1,1) model.
+
+## Part D
+```{r, include=FALSE}
+library(forecast)
+```
+
+```{r}
+auto.arima(robot)
+```
+
+The `auto.arima` function suggests that an ARIMA(0,1,2) model fits the `robot` data best. The plot of the data in Part A looks more like a MA(1) process. The ACF plot in Part B suggets features of an MA(1) model. The EACF in Part B suggets $p=1$ while the `auto.arima` function suggests $p=0$. 
