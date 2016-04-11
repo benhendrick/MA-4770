@@ -1,0 +1,76 @@
+---
+title: "MA 4780 Homework 5"
+author: "Benjamin Hendrick"
+date: "April 10, 2016"
+output: 
+  pdf_document:
+    highlight: null
+---
+# Exercise 7.3
+
+# Exercise 7.15
+
+Simulate the AR(1) model.
+
+```{r}
+set.seed(1)
+ar1 <- arima.sim(list(order = c(1,0,0), ar = c(-0.7)), n = 100)
+```
+
+## Part A
+
+Use the `arima` function with method `ML` to find the maximum likelihood estimator of $\phi$.
+
+```{r}
+ar1.mle <- arima(ar1,order=c(1,0,0),method="ML")
+```
+
+The MLE for $\phi$ is `r ar1.mle$coef[1]`.
+
+## Part B
+
+Using the sample size $n=100$, we can run the `arima` function with method `ML` many times.
+
+```{r}
+mle.list <- c()
+for(i in 1:1000){
+  ar1 <- arima.sim(list(order = c(1,0,0), ar = c(-0.7)), n = 100)
+  ar1.mle <- arima(ar1,order=c(1,0,0),method="ML")
+  mle.list <- c(mle.list,ar1.mle$coef[1])
+}
+```
+
+## Part C
+
+The center of the sampling distribution is $\mu =$ `r mean(mle.list)`.
+
+The histogram of the sampling distribution is:
+
+```{r}
+hist(x = mle.list, 
+     main = "MLE for 100 AR(1) Simulations",
+     xlab = "MLE")
+```
+
+## Part D
+
+The estimators are unbiased and normally distributed because the sample size is so large. The histogram in Part C implied normality and unbias.
+
+## Part E
+
+The variance of the sampling distribution is $\sigma^2 =$ `r var(mle.list)`.
+
+By 7.4.9 on Page 161 in the text, the variance should approximately be $\frac{1-\phi^2}{n} = \frac{1-0.7^2}{100} = 0.0051$.
+
+The two variances are extremely close. The only differ by less than 0.0004.
+
+# Exercise 7.21
+
+Simulate the ARMA(1,1)
+
+```{r}
+set.seed(2)
+arma11 <-arima.sim(list(order = c(1,0,1), ar = c(-0.7)), ma = c(-0.6), n = 48)
+```
+
+
