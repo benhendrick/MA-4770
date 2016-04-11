@@ -6,6 +6,11 @@ output:
   pdf_document:
     highlight: null
 ---
+
+```{r, include=FALSE}
+library(TSA)
+```
+
 # Exercise 7.3
 
 # Exercise 7.15
@@ -66,11 +71,25 @@ The two variances are extremely close. The only differ by less than 0.0004.
 
 # Exercise 7.21
 
+
+## Part A
 Simulate the ARMA(1,1)
 
 ```{r}
 set.seed(2)
-arma11 <-arima.sim(list(order = c(1,0,1), ar = c(-0.7)), ma = c(-0.6), n = 48)
+#arma11 <-arima.sim(list(order = c(1,0,1), ar = c(-0.7)), ma = c(-0.6), n = 48)
 ```
+
+# Exercise 7.27
+
+## Part A
+```{r}
+data("oil.price")
+oil.ar1.mle <- arima(oil.price, order = c(1,0,0), method = "ML") # AR(1)
+oil.ar4.mel <- arima(oil.price, order = c(4,0,0), method = "ML") # AR(4)
+```
+The AIC for the AR(1) model is `r oil.ar1.mle$aic`. The AIC for the AR(2) model is `r oil.ar4.mle$aic`. Between the two, the AR(4) model has the smallest AIC. It would be a better model than the AR(1).
+
+## Part B
 
 
