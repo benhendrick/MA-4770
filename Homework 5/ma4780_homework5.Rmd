@@ -114,8 +114,8 @@ robot.ar1 <- arima(robot, order = c(1,0,0))
 
 The parameter(s) of the AR(1) model for the `robot` data are:
 
--$\phi =$ `r robot.ar1$coef[1]`
--$\sigma^{2} =$ `r robot.ar1$sigma2`
+- $\phi = 0.3074$
+- $\sigma^{2} = 6.482\times 10^{-6}$ 
 
 ## Part B
 
@@ -125,8 +125,8 @@ robot.ima11 <- arima(robot, order = c(0,1,1))
 
 The parameter(s) of the IMA(1,1) model for the `robot` data are:
 
--$\theta =$ `r robot.ima11$coef[1]`
--$\sigma^{2} =$ `r robot.ima11$sigma2`
+- $\theta = -0.8713$ 
+- $\sigma^{2} = 6.069\times 10^{-6}$ 
 
 ## Part C
 
@@ -149,7 +149,74 @@ $$Var(\hat{r}_{k}) \approx \frac{1}{n} \text{ for } k \ge 3$$
 
 By these rules:
 
-- $Var(\hat{r}_{1}) \approx \frac{1.1^2}{200} = 0.00605$
-- $Var(\hat{r}_{2}) \approx \frac{(-0.8)^2 + 1.1^2(1+(-0.8))^2}{200} = 0.003442$
-- $Var(\hat{r}_{3}) \approx \frac{1}{200} = 0.005$
+$$Var(\hat{r}_{1}) \approx \frac{1.1^2}{200} = 0.00605$$
+$$Var(\hat{r}_{2}) \approx \frac{(-0.8)^2 + 1.1^2(1+(-0.8))^2}{200} = 0.003442$$
+$$Var(\hat{r}_{3}) \approx \frac{1}{200} = 0.005$$
 
+The 95 percent confidence intervals for $\hat{r}_{1}$, $\hat{r}_2$ and $\hat{r}_3$ are 
+
+$$\pm 2\sqrt{Var(\hat{r}_{k})} \text{ for } k = 1, 2, 3, \ldots$$
+
+Test for individual support:
+
+$$\pm 2\sqrt{Var(\hat{r}_1)} = \pm 2\sqrt{0.00605} = (-0.1555635, 0.1555635)$$
+
+Becasue 0.13 is in the confidence interval, $\hat{r}_{1}$ supports AR(2).
+
+$$\pm 2\sqrt{Var(\hat{r}_2)} = \pm 2\sqrt{0.003442} = (-0.1173371, 0.1173371)$$
+
+Becasue 0.13 is not in the confidence interval, $\hat{r}_{2}$ does support AR(2).
+
+$$\pm 2\sqrt{Var(\hat{r}_3)} = \pm 2\sqrt{0.005} = (-0.1414214, 0.1414214)$$
+
+Becasue 0.12 is not in the confidence interval, $\hat{r}_{3}$ supports AR(2).
+
+Perform a Ljung-Box test to determine joint support.
+
+Find $Q$, where $Q = n(\hat{r}_1^2 +\hat{r}_2^2+\hat{r}_3^2)$
+
+$$Q = 200(0.13^2+0.13^2+0.12^2) = 9.64$$
+
+Find $Q*$, where $Q* = n(n+2)\big(\frac{\hat{r}_1^2}{n-1}+\frac{\hat{r}_2^2}{n-2}+\frac{\hat{r}^2_3}{n-3}\big)$
+
+$$Q* = 200(202)\big(\frac{0.13^2}{199}+\frac{0.13^2}{198}+\frac{0.12^2}{197}\big) = 9.832334$$
+
+Becasue $Q* > Q$, the residual autocorrelations joingly support AR(2).
+
+
+# Exercise 8.6
+
+```{r}
+set.seed(34567)
+ar2.sim <- arima.sim(list(order=c(2,0,0),ar=c(1.5, -0.75)),n=48)
+```
+
+## Part A
+
+```{r}
+ar2.fit <- arima(ar2.sim, order = c(2,0,0))
+plot(rstandard(ar2.fit), type = "o",
+     main = "Residuals or AR(2) Model",
+     ylab = "Standard Residuals")
+abline(h=0)
+```
+
+## Part B
+
+```{r}
+qqnorm(rstandard(ar2.fit))
+qqline(rstandard(ar2.fit))
+```
+
+## Part C
+
+```{r}
+acf(rstandard(ar2.fit))
+```
+
+## Part C
+
+
+# Exercise 8.9
+
+# Exercise 8.11
