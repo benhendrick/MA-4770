@@ -13,6 +13,26 @@ library(TSA)
 
 # Exercise 7.3
 
+Use the confidence interval equation
+
+$$\hat{\phi}\pm z_{\alpha/2}\sqrt{\frac{(1-\hat{\phi}^2)}{n}}$$
+
+where $\hat{\phi} = 0.7$, $\alpha = 0.05$, and $z_{\alpha/2} = 1.96$.
+
+```{r}
+phi = 0.7; z = 1.96; n= 1; a = 1; b = 0
+
+while (a-b > 0.2) {
+  a = phi + z*sqrt((1-phi^2)/n)
+  b = phi - z*sqrt((1-phi^2)/n)
+  n = n+1
+}
+
+n
+```
+
+In order for the confidence interval to not exceed $\pm 1$, n must equal at least 197. Therefore the series must be 197 lags long.
+
 # Exercise 7.15
 
 Simulate the AR(1) model.
@@ -69,16 +89,6 @@ By 7.4.9 on Page 161 in the text, the variance should approximately be $\frac{1-
 
 The two variances are extremely close. The only differ by less than 0.0004.
 
-# Exercise 7.21
-
-
-## Part A
-Simulate the ARMA(1,1)
-
-```{r}
-set.seed(2)
-#arma11 <-arima.sim(list(order = c(1,0,1), ar = c(-0.7)), ma = c(-0.6), n = 48)
-```
 
 # Exercise 7.27
 
