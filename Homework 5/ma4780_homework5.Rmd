@@ -5,6 +5,8 @@ date: "April 10, 2016"
 output: 
   pdf_document:
     highlight: null
+    toc: true
+    toc_depth: 2
 ---
 
 ```{r, include=FALSE}
